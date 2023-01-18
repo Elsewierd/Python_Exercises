@@ -8,19 +8,19 @@ import pyttsx3, PyPDF2
 
 # FUNCTIONS
 #gives the user the ability to choose the PDF to be converted
-def open_file():
-    file = tk.filedialog.askopenfilename(mode = 'r', filetypes = [('PDF Files', '*.pdf')])
+def open_file(root):
+    file = askopenfilename(filetypes = [('PDF Files', '*.pdf')])
     if file is None:
         raise ValueError("File does not exist.")
     return file
 
 #
 def pdf_converter(pdf_file,mp3_file):
-    pdfreader = PyPDF2.PdfFileReader(open(pdf_file, 'rb'))
+    pdfreader = PyPDF2.PdfReader(open(pdf_file, 'rb'))
     speaker = pyttsx3.init()
 
-    for page_num in range(pdfreader.numPages):
-        text = pdfreader.getPage(page_num).extractText()
+    for page_num in range(len(pdfreader.pages)):
+        text = pdfreader.pages[page_num].extract_text()
         clean_text = text.strip().replace('\n', ' ')
         print(clean_text)
 
@@ -31,7 +31,12 @@ def pdf_converter(pdf_file,mp3_file):
 
 #MAIN CODE
  
-root= Tk.Tk()
+root= tk.Tk()
 root.withdraw()
-pdf_file = open_file()
+
+pdf_file = open_file(root)
 mp3_file = f"{pdf_file[-4:]}.mp3"
+
+pdf_converter(pdf_file, mp3_file)
+
+root.destroy()
